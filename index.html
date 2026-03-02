@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BuruSpin — Herramientas de Aula</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+
+  :root {
+    --c1:#ff6b6b;--c2:#ffd93d;--c3:#6bcb77;--c4:#4d96ff;
+    --c5:#ff922b;--c6:#cc5de8;--c7:#20c997;--c8:#f06595;
+  }
+  *,*::before,*::after{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:'Inter',system-ui,sans-serif;background:#0f0f1a;color:#f8f8f2;min-height:100vh;overflow-x:hidden}
+
+  .glass{background:rgba(255,255,255,.05);backdrop-filter:blur(10px);border:2px solid rgba(255,255,255,.12);border-radius:20px}
+  .neo{background:#1a1a2e;border:3px solid #fff;border-radius:16px;box-shadow:6px 6px 0 #fff;transition:all .15s}
+  .neo:hover{box-shadow:8px 8px 0 #fff;transform:translate(-2px,-2px)}
+
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:900;font-size:1rem;letter-spacing:.5px;padding:12px 22px;border-radius:12px;cursor:pointer;border:3px solid #fff;box-shadow:4px 4px 0 #fff;transition:all .12s;user-select:none}
+  .btn:hover{box-shadow:6px 6px 0 #fff;transform:translate(-2px,-2px)}
+  .btn:active{box-shadow:1px 1px 0 #fff;transform:translate(3px,3px)}
+  .btn:disabled{opacity:.4;cursor:not-allowed;transform:none !important;box-shadow:4px 4px 0 #fff !important}
+  .btn-red   {background:var(--c1);color:#000}.btn-yellow{background:var(--c2);color:#000}
+  .btn-green {background:var(--c3);color:#000}.btn-blue  {background:var(--c4);color:#000}
+  .btn-orange{background:var(--c5);color:#000}.btn-purple{background:var(--c6);color:#fff}
+  .btn-teal  {background:var(--c7);color:#000}.btn-pink  {background:var(--c8);color:#000}
+  .btn-ghost {background:transparent;color:#fff}
+
+  .section-tag{display:inline-block;padding:4px 14px;border-radius:999px;font-size:.75rem;font-weight:900;letter-spacing:2px;text-transform:uppercase;border:2px solid currentColor;margin-bottom:10px}
+
+  /* ── Tómbola ── */
+  #slot-reel{font-size:2.5rem;font-weight:900;min-height:90px;display:flex;align-items:center;justify-content:center;transition:color .3s;text-shadow:0 0 20px currentColor;overflow:hidden}
+
+  @keyframes slot-spin{
+    0%  {transform:translateY(-60%);opacity:0}
+    25% {opacity:1}
+    100%{transform:translateY(0);opacity:1}
+  }
+  .slot-anim{animation:slot-spin .2s ease-out}
+
+  @keyframes winner-glow{
+    0%,100%{text-shadow:0 0 12px #ffd93d,0 0 35px #ffd93d,0 0 70px #ffd93d;color:#ffd93d}
+    50%    {text-shadow:0 0 22px #ff6b6b,0 0 55px #ff6b6b,0 0 90px #ff6b6b;color:#ff6b6b}
+  }
+  .winner-glow{animation:winner-glow 1.6s ease-in-out infinite}
+
+  /* ── Dados ── */
+  @keyframes dice-dance{
+    0%  {transform:scale(1) rotate(0deg)}
+    25% {transform:scale(1.4) rotate(-20deg)}
+    50% {transform:scale(.82) rotate(13deg)}
+    75% {transform:scale(1.25) rotate(-7deg)}
+    100%{transform:scale(1) rotate(0deg)}
+  }
+  .dice-dance{animation:dice-dance .4s ease-in-out}
+
+  @keyframes number-pop{
+    0%  {transform:scale(0) rotate(-22deg);opacity:0}
+    55% {transform:scale(1.35) rotate(6deg);opacity:1}
+    100%{transform:scale(1) rotate(0deg);opacity:1}
+  }
+  .number-pop{animation:number-pop .75s cubic-bezier(.34,1.56,.64,1)}
+
+  /* ── Grupos ── */
+  @keyframes card-deal{
+    0%  {transform:translateY(-70px) scale(.75) rotate(-10deg);opacity:0}
+    100%{transform:translateY(0) scale(1) rotate(0deg);opacity:1}
+  }
+  .card-deal{animation:card-deal .6s cubic-bezier(.22,1,.36,1) both}
+
+  /* ── Tabs ── */
+  .tab-btn.active{background:#fff;color:#0f0f1a;box-shadow:4px 4px 0 rgba(255,255,255,.3)}
+  .tab-content{display:none}
+  .tab-content.active{display:block}
+
+  /* ── Inputs ── */
+  .field{background:rgba(255,255,255,.08);border:2px solid rgba(255,255,255,.2);border-radius:10px;color:#fff;padding:10px 14px;width:100%;font-size:1rem;font-weight:700;transition:border-color .2s}
+  .field:focus{outline:none;border-color:var(--c4)}
+  .field:focus-visible{outline:2px solid var(--c4);outline-offset:2px}
+  .field::placeholder{color:rgba(255,255,255,.3);font-weight:400}
+
+  /* ── Mode toggle (ruleta) ── */
+  .mode-toggle{display:flex;gap:0;border:3px solid #fff;border-radius:10px;overflow:hidden}
+  .mode-toggle button{flex:1;padding:8px 10px;font-weight:900;font-size:.8rem;background:transparent;color:#fff;border:none;cursor:pointer;transition:all .15s;letter-spacing:.5px}
+  .mode-toggle button.active{background:#fff;color:#0f0f1a}
+
+  /* ── Toast ── */
+  #toast{position:fixed;bottom:40px;left:50%;transform:translateX(-50%) translateY(160px);background:#fff;color:#000;font-weight:900;font-size:clamp(1.4rem,4vw,2.4rem);letter-spacing:.5px;padding:18px 48px;border-radius:24px;border:4px solid #000;box-shadow:6px 6px 0 #000;transition:transform .4s cubic-bezier(.34,1.56,.64,1);z-index:9999;white-space:nowrap;pointer-events:none;text-align:center}
+  #toast.show{transform:translateX(-50%) translateY(0)}
+
+  /* ── Ruleta ── */
+  #roulette-wrap{position:relative;display:flex;justify-content:center;margin:0 auto;width:fit-content}
+  #roulette-pointer{position:absolute;top:-18px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:14px solid transparent;border-right:14px solid transparent;border-top:28px solid #fff;filter:drop-shadow(0 0 8px #ffd93d);z-index:10}
+
+  /* ── Scrollbar ── */
+  ::-webkit-scrollbar{width:6px}
+  ::-webkit-scrollbar-track{background:rgba(255,255,255,.04)}
+  ::-webkit-scrollbar-thumb{background:rgba(255,255,255,.18);border-radius:3px}
+</style>
+</head>
+<body class="p-4 md:p-6">
+
+<!-- ══ HEADER ══ -->
+<header class="text-center mb-4">
+  <h1 class="text-5xl md:text-7xl font-black tracking-tight">
+    <span style="color:var(--c4)">Buru</span><span style="color:var(--c2)">SPIN</span>
+  </h1>
+</header>
+
+<!-- ══ MAIN LAYOUT: Nav izq + Centro + Panel derecho ══ -->
+<div class="flex gap-3 max-w-7xl mx-auto items-start">
+
+  <!-- ─── IZQ: Nav vertical ─── -->
+  <nav class="flex-shrink-0 flex flex-col gap-2 sticky top-3 pt-1" role="tablist" style="min-width:78px">
+    <button class="tab-btn btn btn-ghost active" data-tab="tombola"  role="tab" aria-selected="true"
+      style="flex-direction:column;padding:11px 6px;gap:3px;font-size:.63rem;min-width:74px;letter-spacing:.3px;line-height:1.2">
+      <span style="font-size:1.5rem;line-height:1">🎰</span><span>Tómbola</span>
+    </button>
+    <button class="tab-btn btn btn-ghost"        data-tab="dice"     role="tab" aria-selected="false"
+      style="flex-direction:column;padding:11px 6px;gap:3px;font-size:.63rem;min-width:74px;letter-spacing:.3px;line-height:1.2">
+      <span style="font-size:1.5rem;line-height:1">🎲</span><span>Dados</span>
+    </button>
+    <button class="tab-btn btn btn-ghost"        data-tab="roulette" role="tab" aria-selected="false"
+      style="flex-direction:column;padding:11px 6px;gap:3px;font-size:.63rem;min-width:74px;letter-spacing:.3px;line-height:1.2">
+      <span style="font-size:1.5rem;line-height:1">🎡</span><span>Ruleta</span>
+    </button>
+    <button class="tab-btn btn btn-ghost"        data-tab="groups"   role="tab" aria-selected="false"
+      style="flex-direction:column;padding:11px 6px;gap:3px;font-size:.63rem;min-width:74px;letter-spacing:.3px;line-height:1.2">
+      <span style="font-size:1.5rem;line-height:1">👥</span><span>Grupos</span>
+    </button>
+  </nav>
+
+  <!-- ─── CENTRO: Contenido ─── -->
+  <div class="flex-1 min-w-0">
+
+    <!-- ─── TÓMBOLA ─── -->
+    <div id="tab-tombola" class="tab-content active" role="tabpanel">
+      <div class="neo p-6">
+        <span class="section-tag" style="color:var(--c1)">🎰 Tómbola</span>
+        <p class="text-white/50 text-sm mb-5">Elige un alumno al azar con efecto tragamonedas. Sin repetición hasta agotar la lista.</p>
+        <div class="glass rounded-2xl p-6 text-center mb-5" style="border-color:rgba(255,107,107,.35);min-height:120px">
+          <div id="slot-reel" style="color:var(--c2)">— pulsa girar —</div>
+        </div>
+        <div class="flex flex-wrap gap-3 justify-center">
+          <button id="tombola-btn" onclick="spinTombola()" class="btn btn-red text-lg px-8">🎰 GIRAR</button>
+          <button onclick="resetTombola()" class="btn btn-ghost text-sm">↺ Reset</button>
+        </div>
+        <p id="tombola-left" class="text-center text-white/40 text-sm mt-4 min-h-5"></p>
+      </div>
+    </div>
+
+    <!-- ─── DADOS ─── -->
+    <div id="tab-dice" class="tab-content" role="tabpanel">
+      <div class="neo p-6">
+        <span class="section-tag" style="color:var(--c5)">🎲 Generador de Números</span>
+        <div class="grid grid-cols-2 gap-4 mt-4 mb-5">
+          <div>
+            <label class="text-white/60 text-sm font-bold block mb-1" for="dice-min">Mínimo</label>
+            <input id="dice-min" type="number" class="field" value="1">
+          </div>
+          <div>
+            <label class="text-white/60 text-sm font-bold block mb-1" for="dice-max">Máximo</label>
+            <input id="dice-max" type="number" class="field" value="10">
+          </div>
+        </div>
+        <div id="dice-result"
+          style="font-size:6rem;font-weight:900;min-height:130px;display:flex;align-items:center;justify-content:center;color:var(--c5);line-height:1">
+          ?
+        </div>
+        <div class="text-center mt-2">
+          <button id="dice-btn" onclick="rollDice()" class="btn btn-orange text-lg px-10">🎲 LANZAR</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── RULETA ─── -->
+    <div id="tab-roulette" class="tab-content" role="tabpanel">
+      <div class="neo p-6">
+        <span class="section-tag" style="color:var(--c7)">🎡 Ruleta</span>
+
+        <!-- Modo: Números / Alumnos -->
+        <div class="flex flex-wrap items-center gap-4 mt-4 mb-4">
+          <div>
+            <label class="text-white/60 text-xs font-bold block mb-1">Modo</label>
+            <div class="mode-toggle">
+              <button id="rmode-names" onclick="setRouletteMode('names')"  class="active">👤 Alumnos</button>
+              <button id="rmode-num"   onclick="setRouletteMode('numbers')"              >🔢 Números</button>
+            </div>
+          </div>
+          <div id="sector-count-wrap">
+            <label class="text-white/60 text-xs font-bold block mb-1" for="sector-count">Nº de Sectores (2–16)</label>
+            <input id="sector-count" type="number" class="field" style="width:130px" value="6" min="2" max="16"
+              oninput="buildRoulette()">
+          </div>
+        </div>
+
+        <div class="text-center mb-4">
+          <button id="spin-btn" onclick="spinRoulette()" class="btn btn-teal text-lg px-10">🎡 GIRAR</button>
+        </div>
+
+        <div id="roulette-wrap">
+          <div id="roulette-pointer"></div>
+          <canvas id="roulette-canvas" width="300" height="300"
+            style="display:block;border-radius:50%;border:4px solid #fff;box-shadow:0 0 30px rgba(77,150,255,.35)"></canvas>
+          <!-- ganador superpuesto sobre la ruleta -->
+          <div id="roulette-result"
+            style="display:none;position:absolute;inset:4px;border-radius:50%;background:rgba(10,10,26,.82);backdrop-filter:blur(4px);align-items:center;justify-content:center;flex-direction:column;z-index:8;cursor:pointer"
+            onclick="this.style.display='none'" title="Clic para cerrar">
+            <div id="roulette-result-text"
+              style="font-weight:900;text-align:center;padding:18px;line-height:1.15;font-size:clamp(1.6rem,4.5vw,2.6rem);text-shadow:0 0 24px currentColor"></div>
+            <div style="font-size:.7rem;color:rgba(255,255,255,.4);margin-top:4px">clic para cerrar</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── GRUPOS ─── -->
+    <div id="tab-groups" class="tab-content" role="tabpanel">
+      <div class="neo p-6">
+        <span class="section-tag" style="color:var(--c6)">👥 Creador de Grupos</span>
+        <div class="flex flex-wrap items-end gap-4 mt-4 mb-5">
+          <div>
+            <label class="text-white/60 text-sm font-bold block mb-1" for="group-size">Alumnos por Grupo</label>
+            <input id="group-size" type="number" class="field" style="width:130px" value="3" min="1">
+          </div>
+          <button onclick="buildGroups()" class="btn btn-purple">🃏 CREAR GRUPOS</button>
+        </div>
+        <div id="groups-result" class="grid gap-4 grid-cols-1 sm:grid-cols-2"></div>
+      </div>
+    </div>
+  </div><!-- /centro -->
+
+  <!-- ─── DERECHA: Panel de Alumnos ─── -->
+  <aside class="w-full md:w-72 flex-shrink-0">
+    <div class="neo p-5 sticky top-4">
+      <div class="flex items-center justify-between mb-3">
+        <span class="section-tag" style="color:var(--c3);margin-bottom:0">📋 Alumnos</span>
+        <button onclick="toggleNames()" class="btn btn-ghost text-xs"
+          style="padding:5px 10px;box-shadow:none;border-color:rgba(255,255,255,.25)">
+          <span id="toggle-label">▼ Ocultar</span>
+        </button>
+      </div>
+      <div id="names-area">
+        <textarea id="names-input" class="field font-mono text-sm" rows="12"
+          placeholder="Escribe o pega los nombres,&#10;uno por línea...&#10;&#10;Ej:&#10;Ana García&#10;Carlos López"></textarea>
+        <div class="flex flex-col gap-2 mt-3">
+          <button onclick="saveTxt()" class="btn btn-green text-sm" style="padding:9px 14px;width:100%">💾 Guardar .txt</button>
+          <label class="btn btn-blue text-sm cursor-pointer" style="padding:9px 14px;width:100%">
+            📂 Cargar .txt
+            <input type="file" accept=".txt" class="hidden" onchange="loadTxt(event)">
+          </label>
+        </div>
+        <p id="names-count" class="text-white/40 text-xs font-bold text-center mt-2"></p>
+      </div>
+    </div>
+  </aside>
+
+</div><!-- /main layout -->
+
+<!-- Toast -->
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+// ════════════════════════════════════════════
+//  CONSTANTES
+// ════════════════════════════════════════════
+const COLORS = [
+  '#ff6b6b','#ffd93d','#6bcb77','#4d96ff','#ff922b','#cc5de8',
+  '#20c997','#f06595','#74c0fc','#a9e34b','#ffa94d','#e599f7',
+  '#63e6be','#ff8787','#66d9e8','#ffe066'
+];
+
+// ════════════════════════════════════════════
+//  AUDIO — Web Audio API (sin archivos externos)
+// ════════════════════════════════════════════
+let _ac = null;
+function getAC() {
+  if (!_ac) _ac = new (window.AudioContext || window.webkitAudioContext)();
+  if (_ac.state === 'suspended') _ac.resume();
+  return _ac;
+}
+
+// Clic corto (tómbola tick)
+function sndClick() {
+  try {
+    const c = getAC(), t = c.currentTime;
+    const o = c.createOscillator(), g = c.createGain();
+    o.connect(g); g.connect(c.destination);
+    o.frequency.setValueAtTime(900, t);
+    o.frequency.exponentialRampToValueAtTime(450, t + 0.04);
+    g.gain.setValueAtTime(0.15, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.04);
+    o.start(t); o.stop(t + 0.05);
+  } catch(e){}
+}
+
+// Fanfarria ganador (tómbola / ruleta)
+function sndFanfare() {
+  try {
+    const c = getAC();
+    [523, 659, 784, 1047].forEach((freq, i) => {
+      const t = c.currentTime + i * 0.13;
+      const o = c.createOscillator(), g = c.createGain();
+      o.type = 'triangle';
+      o.connect(g); g.connect(c.destination);
+      o.frequency.setValueAtTime(freq, t);
+      g.gain.setValueAtTime(0, t);
+      g.gain.linearRampToValueAtTime(0.22, t + 0.03);
+      g.gain.exponentialRampToValueAtTime(0.001, t + 0.38);
+      o.start(t); o.stop(t + 0.42);
+    });
+  } catch(e){}
+}
+
+// Ruido corto (dado rodando)
+function sndRattle() {
+  try {
+    const c = getAC(), t = c.currentTime;
+    const buf = c.createBuffer(1, Math.floor(c.sampleRate * 0.07), c.sampleRate);
+    const d = buf.getChannelData(0);
+    for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * 0.35;
+    const s = c.createBufferSource(), g = c.createGain();
+    s.buffer = buf;
+    s.connect(g); g.connect(c.destination);
+    g.gain.setValueAtTime(0.5, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.07);
+    s.start(t);
+  } catch(e){}
+}
+
+// Pop resultado (dado)
+function sndPop() {
+  try {
+    const c = getAC(), t = c.currentTime;
+    const o = c.createOscillator(), g = c.createGain();
+    o.connect(g); g.connect(c.destination);
+    o.type = 'sine';
+    o.frequency.setValueAtTime(220, t);
+    o.frequency.exponentialRampToValueAtTime(1100, t + 0.14);
+    g.gain.setValueAtTime(0.28, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.28);
+    o.start(t); o.stop(t + 0.3);
+  } catch(e){}
+}
+
+// Ruleta — tick de sector (igual que tómbola)
+function sndTick(freq) {
+  try {
+    const c = getAC(), t = c.currentTime;
+    const o = c.createOscillator(), g = c.createGain();
+    o.connect(g); g.connect(c.destination);
+    o.frequency.setValueAtTime(freq * 1.8, t);
+    o.frequency.exponentialRampToValueAtTime(freq * 0.9, t + 0.035);
+    g.gain.setValueAtTime(0.14, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.045);
+    o.start(t); o.stop(t + 0.05);
+  } catch(e){}
+}
+let _lastTickAngle = 0;
+
+// Carta repartida (grupos)
+function sndCard() {
+  try {
+    const c = getAC(), t = c.currentTime;
+    const o = c.createOscillator(), f = c.createBiquadFilter(), g = c.createGain();
+    o.type = 'sawtooth'; f.type = 'bandpass'; f.frequency.value = 1400;
+    o.connect(f); f.connect(g); g.connect(c.destination);
+    o.frequency.setValueAtTime(350, t);
+    o.frequency.exponentialRampToValueAtTime(90, t + 0.16);
+    g.gain.setValueAtTime(0.13, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.18);
+    o.start(t); o.stop(t + 0.2);
+  } catch(e){}
+}
+
+// ════════════════════════════════════════════
+//  UTILIDADES
+// ════════════════════════════════════════════
+function getNames() {
+  return document.getElementById('names-input').value
+    .split('\n').map(n => n.trim()).filter(Boolean);
+}
+
+let toastTimer = null;
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2800);
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function clampInt(value, min, max) {
+  const n = parseInt(value, 10);
+  if (!Number.isFinite(n)) return null;
+  return Math.min(max, Math.max(min, n));
+}
+
+function updateNamesCount() {
+  const n = getNames().length;
+  document.getElementById('names-count').textContent =
+    n ? (n + ' alumno' + (n !== 1 ? 's' : '')) : '';
+}
+
+document.getElementById('names-input').addEventListener('input', () => {
+  updateNamesCount();
+  if (roulette_mode === 'names') buildRoulette();
+});
+updateNamesCount();
+
+// ════════════════════════════════════════════
+//  SESIÓN
+// ════════════════════════════════════════════
+function toggleNames() {
+  const area  = document.getElementById('names-area');
+  const label = document.getElementById('toggle-label');
+  const hidden = area.style.display === 'none';
+  area.style.display = hidden ? 'block' : 'none';
+  label.textContent  = hidden ? '▼ Ocultar' : '▶ Mostrar';
+}
+
+function saveTxt() {
+  const names = getNames();
+  if (!names.length) { toast('⚠ No hay nombres que guardar'); return; }
+  try {
+    const blob = new Blob([names.join('\n')], { type: 'text/plain;charset=utf-8' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url; a.download = 'alumnos.txt'; a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    toast('✅ Guardado (' + names.length + ' alumnos)');
+  } catch (err) {
+    toast('❌ Error al guardar: ' + err.message);
+  }
+}
+
+function loadTxt(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  if (!file.name.endsWith('.txt')) { toast('⚠ Solo archivos .txt'); return; }
+  const reader = new FileReader();
+  reader.onerror = () => toast('❌ Error al leer el archivo');
+  reader.onload  = (e) => {
+    const content = (e.target.result || '').trim();
+    if (!content) { toast('⚠ El archivo está vacío'); return; }
+    document.getElementById('names-input').value = content;
+    updateNamesCount();
+    if (roulette_mode === 'names') buildRoulette();
+    toast('✅ ' + getNames().length + ' alumnos cargados');
+  };
+  reader.readAsText(file, 'UTF-8');
+  event.target.value = '';
+}
+
+// ════════════════════════════════════════════
+//  TABS
+// ════════════════════════════════════════════
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => {
+      b.classList.remove('active');
+      b.setAttribute('aria-selected', 'false');
+    });
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    btn.setAttribute('aria-selected', 'true');
+    document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+    // Generar ruleta al entrar en su pestaña
+    if (btn.dataset.tab === 'roulette') buildRoulette();
+  });
+});
+
+// ════════════════════════════════════════════
+//  TÓMBOLA — slot machine sin repetición
+// ════════════════════════════════════════════
+let tombola_pool  = [];
+let tombola_used  = [];
+let slot_spinning = false;
+let slot_tid      = null;
+
+function resetTombola() {
+  clearTimeout(slot_tid);
+  tombola_pool  = [];
+  tombola_used  = [];
+  slot_spinning = false;
+  const reel = document.getElementById('slot-reel');
+  reel.textContent = '— pulsa girar —';
+  reel.style.color = 'var(--c2)';
+  reel.className   = '';
+  document.getElementById('tombola-left').textContent = '';
+  document.getElementById('tombola-btn').disabled = false;
+  toast('↺ Tómbola reiniciada');
+}
+
+function spinTombola() {
+  if (slot_spinning) return;
+  const names = getNames();
+  if (!names.length) { toast('⚠ Añade nombres primero'); return; }
+
+  if (!tombola_pool.length) {
+    if (tombola_used.length) toast('🔄 Pool vacío — se recarga');
+    tombola_used = [];
+    tombola_pool = shuffle(names);
+  }
+
+  slot_spinning = true;
+  document.getElementById('tombola-btn').disabled = true;
+
+  const reel   = document.getElementById('slot-reel');
+  const winner = tombola_pool.shift();
+  tombola_used.push(winner);
+
+  reel.className   = '';
+  reel.style.color = 'var(--c4)';
+
+  const SPIN_TOTAL = 2600;
+  const TICK_MIN   = 65;
+  const TICK_MAX   = 420;
+  let   elapsed    = 0;
+
+  function tick() {
+    const progress = Math.min(elapsed / SPIN_TOTAL, 1);
+    const delay    = TICK_MIN + (TICK_MAX - TICK_MIN) * Math.pow(progress, 2.2);
+    const shown    = names[Math.floor(Math.random() * names.length)];
+
+    sndClick();
+    reel.textContent = shown;
+    reel.classList.remove('slot-anim');
+    void reel.offsetWidth;
+    reel.classList.add('slot-anim');
+
+    elapsed += delay;
+
+    if (elapsed >= SPIN_TOTAL) {
+      sndFanfare();
+      reel.textContent = winner;
+      reel.className   = 'winner-glow';
+      slot_spinning    = false;
+      document.getElementById('tombola-btn').disabled = false;
+
+      const left = tombola_pool.length;
+      document.getElementById('tombola-left').textContent = left
+        ? left + ' alumno' + (left !== 1 ? 's' : '') + ' restante' + (left !== 1 ? 's' : '')
+        : '🏁 Todos elegidos — pulsa Reset para repetir';
+
+      toast('🎉 ¡' + winner + '!');
+      return;
+    }
+    slot_tid = setTimeout(tick, delay);
+  }
+  tick();
+}
+
+// ════════════════════════════════════════════
+//  DADOS — generador animado
+// ════════════════════════════════════════════
+let dice_animating = false;
+
+function rollDice() {
+  if (dice_animating) return;
+
+  const minV = clampInt(document.getElementById('dice-min').value, -9999, 9999);
+  const maxV = clampInt(document.getElementById('dice-max').value, -9999, 9999);
+
+  if (minV === null || maxV === null) { toast('⚠ Introduce valores numéricos'); return; }
+  if (minV > maxV) { toast('⚠ El mínimo debe ser ≤ al máximo'); return; }
+
+  dice_animating = true;
+  document.getElementById('dice-btn').disabled = true;
+
+  const result = document.getElementById('dice-result');
+  result.className   = '';
+  result.style.color = 'var(--c5)';
+
+  let count = 0;
+  const TOTAL_FRAMES = 22;
+
+  const iv = setInterval(() => {
+    if (count % 2 === 0) sndRattle();
+    const r = Math.floor(Math.random() * (maxV - minV + 1)) + minV;
+    result.textContent = r;
+    result.classList.remove('dice-dance');
+    void result.offsetWidth;
+    result.classList.add('dice-dance');
+    count++;
+
+    if (count >= TOTAL_FRAMES) {
+      clearInterval(iv);
+      const final = Math.floor(Math.random() * (maxV - minV + 1)) + minV;
+      result.textContent = final;
+      result.className   = 'number-pop';
+      result.style.color = COLORS[Math.abs(final) % COLORS.length];
+      dice_animating = false;
+      document.getElementById('dice-btn').disabled = false;
+      sndPop();
+      toast('🎲 Resultado: ' + final);
+    }
+  }, 95);
+}
+
+// ════════════════════════════════════════════
+//  RULETA — canvas + física easeOut
+// ════════════════════════════════════════════
+let roulette_sectors  = 6;
+let roulette_angle    = 0;
+let roulette_spinning = false;
+let roulette_raf      = null;
+let roulette_mode     = 'names'; // 'names' | 'numbers'
+let roulette_labels   = [];
+
+function setRouletteMode(mode) {
+  roulette_mode = mode;
+  document.getElementById('rmode-num').classList.toggle('active',   mode === 'numbers');
+  document.getElementById('rmode-names').classList.toggle('active', mode === 'names');
+  document.getElementById('sector-count-wrap').style.display = mode === 'names' ? 'none' : 'block';
+  buildRoulette();
+}
+
+function buildRoulette() {
+  if (roulette_spinning) return;
+
+  const resEl   = document.getElementById('roulette-result');
+  const resText = document.getElementById('roulette-result-text');
+  if (resEl) resEl.style.display = 'none';
+  if (resText) resText.textContent = '';
+
+  if (roulette_mode === 'names') {
+    const names = getNames();
+    if (!names.length) {
+      // Mostrar aviso dentro del overlay (sin romper la estructura del div)
+      if (resText) resText.textContent = '⚠ Añade alumnos en el panel derecho';
+      if (resEl)   { resEl.style.display = 'flex'; resText.style.color = '#ffd93d'; }
+      return;
+    }
+    roulette_labels  = [...names];
+    roulette_sectors = names.length;
+  } else {
+    const n = clampInt(document.getElementById('sector-count').value, 2, 16);
+    if (n === null) { toast('⚠ Entre 2 y 16 sectores'); return; }
+    roulette_sectors = n;
+    roulette_labels  = Array.from({ length: n }, (_, i) => String(i + 1));
+  }
+
+  roulette_angle = 0;
+  _lastTickAngle = 0;
+  drawRoulette(roulette_angle);
+}
+
+function drawRoulette(angle) {
+  const canvas = document.getElementById('roulette-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const R = W / 2 - 4, cx = W / 2, cy = H / 2;
+  const n   = roulette_sectors;
+  const arc = (2 * Math.PI) / n;
+
+  ctx.clearRect(0, 0, W, H);
+
+  for (let i = 0; i < n; i++) {
+    const startAngle = angle + i * arc;
+    const endAngle   = startAngle + arc;
+
+    // Sector
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.arc(cx, cy, R, startAngle, endAngle);
+    ctx.closePath();
+    ctx.fillStyle   = COLORS[i % COLORS.length];
+    ctx.fill();
+    ctx.lineWidth   = 2;
+    ctx.strokeStyle = '#0f0f1a';
+    ctx.stroke();
+
+    // Etiqueta
+    const label  = roulette_labels[i] || String(i + 1);
+    const isLong = label.length > 6;
+    const mid    = startAngle + arc / 2;
+    const dist   = isLong ? R * 0.55 : R * 0.65;
+    const tx     = cx + Math.cos(mid) * dist;
+    const ty     = cy + Math.sin(mid) * dist;
+
+    ctx.save();
+    ctx.translate(tx, ty);
+    ctx.rotate(mid + Math.PI / 2);
+    ctx.fillStyle    = '#0f0f1a';
+    ctx.textAlign    = 'center';
+    ctx.textBaseline = 'middle';
+
+    if (isLong) {
+      const words  = label.split(' ');
+      const line1  = words[0] || '';
+      const line2  = words.slice(1).join(' ');
+      const fsize  = Math.max(8, Math.min(13, Math.floor(R * arc * 0.28)));
+      ctx.font     = 'bold ' + fsize + 'px Inter, system-ui';
+      if (line2) {
+        ctx.fillText(line1, 0, -fsize * 0.6);
+        ctx.fillText(line2, 0,  fsize * 0.6);
+      } else {
+        ctx.fillText(line1, 0, 0);
+      }
+    } else {
+      const fsize = Math.max(10, Math.min(22, Math.floor(R * arc * 0.38)));
+      ctx.font    = 'bold ' + fsize + 'px Inter, system-ui';
+      ctx.fillText(label, 0, 0);
+    }
+    ctx.restore();
+  }
+
+  // Centro
+  ctx.beginPath();
+  ctx.arc(cx, cy, 20, 0, 2 * Math.PI);
+  ctx.fillStyle   = '#0f0f1a';
+  ctx.fill();
+  ctx.lineWidth   = 3;
+  ctx.strokeStyle = '#fff';
+  ctx.stroke();
+}
+
+function spinRoulette() {
+  if (roulette_spinning) return;
+  if (!roulette_labels.length) {
+    toast(roulette_mode === 'names' ? '⚠ Añade alumnos primero' : '⚠ Añade sectores primero');
+    return;
+  }
+
+  // Cancelar animación previa si la hubiera
+  if (roulette_raf) { cancelAnimationFrame(roulette_raf); roulette_raf = null; }
+
+  const resEl = document.getElementById('roulette-result');
+  if (resEl) resEl.style.display = 'none';
+  roulette_spinning = true;
+  document.getElementById('spin-btn').disabled = true;
+
+  const arcSize    = (2 * Math.PI) / roulette_sectors;
+  const fullSpins  = 5 + Math.random() * 5;
+  const extraAngle = Math.random() * 2 * Math.PI;
+  const totalAngle = fullSpins * 2 * Math.PI + extraAngle;
+  const duration   = 5000 + Math.random() * 1500;
+  const startTime  = performance.now();
+  const startAngle = roulette_angle;
+  _lastTickAngle   = roulette_angle;
+
+  function easeOut(t) { return 1 - Math.pow(1 - t, 4); }
+
+  function frame(now) {
+    const elapsed  = now - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    roulette_angle = startAngle + totalAngle * easeOut(progress);
+    drawRoulette(roulette_angle);
+
+    // Tick de sector: sonar cada vez que cruzamos un sector, pitch proporcional a velocidad
+    const tickInterval = arcSize;  // un tick por sector
+    while (roulette_angle - _lastTickAngle >= tickInterval) {
+      _lastTickAngle += tickInterval;
+      // velocidad angular instantánea ≈ derivada de easeOut -> pitch va descendiendo
+      const speed = (totalAngle * 4 * Math.pow(1 - progress, 3)) / duration * 1000;
+      const freq  = Math.min(1400, Math.max(200, 200 + speed * 1.8));
+      sndTick(freq);
+    }
+
+    if (progress < 1) {
+      roulette_raf = requestAnimationFrame(frame);
+      return;
+    }
+
+    roulette_raf      = null;
+    roulette_spinning = false;
+    document.getElementById('spin-btn').disabled = false;
+
+    const normalized = (((-roulette_angle - Math.PI / 2) % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
+    const idx        = Math.floor(normalized / arcSize) % roulette_sectors;
+    const label      = roulette_labels[idx] || String(idx + 1);
+
+    const resWrap = document.getElementById('roulette-result');
+    const resText = document.getElementById('roulette-result-text');
+    if (resText) { resText.textContent = '🏆 ' + label; resText.style.color = COLORS[idx % COLORS.length]; }
+    if (resWrap) resWrap.style.display = 'flex';
+    sndFanfare();
+    toast('🎡 Ganador: ' + label);
+  }
+
+  roulette_raf = requestAnimationFrame(frame);
+}
+
+// Render inicial
+document.getElementById('sector-count-wrap').style.display = 'none'; // modo inicial = alumnos
+buildRoulette();
+
+// ════════════════════════════════════════════
+//  GRUPOS
+// ════════════════════════════════════════════
+function buildGroups() {
+  const names = getNames();
+  if (!names.length) { toast('⚠ Añade nombres primero'); return; }
+
+  const size = clampInt(document.getElementById('group-size').value, 1, names.length);
+  if (size === null) { toast('⚠ Introduce un tamaño de grupo válido'); return; }
+
+  const shuffled  = shuffle(names);
+  const n         = shuffled.length;
+  const numGroups = Math.ceil(n / size);
+  const base      = Math.floor(n / numGroups);   // min por grupo
+  const bigger    = n % numGroups;                // cuántos grupos llevan base+1
+
+  const groups = [];
+  let idx = 0;
+  for (let g = 0; g < numGroups; g++) {
+    const groupSize = g < bigger ? base + 1 : base;
+    groups.push(shuffled.slice(idx, idx + groupSize));
+    idx += groupSize;
+  }
+
+  const container = document.getElementById('groups-result');
+  container.innerHTML = '';
+
+  groups.forEach((group, gi) => {
+    const card = document.createElement('div');
+    card.className = 'neo p-4 card-deal';
+    card.style.animationDelay = (gi * 90) + 'ms';
+    card.style.borderColor    = COLORS[gi % COLORS.length];
+    card.style.boxShadow      = '4px 4px 0 ' + COLORS[gi % COLORS.length];
+    setTimeout(() => sndCard(), gi * 90);
+
+    const title = document.createElement('div');
+    title.className   = 'font-black text-sm uppercase tracking-widest mb-2';
+    title.style.color = COLORS[gi % COLORS.length];
+    title.textContent = 'Grupo ' + (gi + 1);
+    card.appendChild(title);
+
+    group.forEach(name => {
+      const p = document.createElement('p');
+      p.className   = 'text-white font-bold text-sm py-1 border-b border-white/10 last:border-0';
+      p.textContent = '👤 ' + name;
+      card.appendChild(p);
+    });
+
+    container.appendChild(card);
+  });
+
+  toast('✅ ' + groups.length + ' grupo' + (groups.length !== 1 ? 's' : '') + ' creado' + (groups.length !== 1 ? 's' : ''));
+}
+
+// ════════════════════════════════════════════
+//  TECLADO GLOBAL — Space = acción del tab activo
+// ════════════════════════════════════════════
+document.addEventListener('keydown', (e) => {
+  if (e.code !== 'Space' || e.repeat) return;
+  const tag = (e.target || {}).tagName;
+  if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'BUTTON') return;
+  e.preventDefault();
+
+  const activeTab = document.querySelector('.tab-btn.active');
+  if (!activeTab) return;
+  const tab = activeTab.dataset.tab;
+
+  if (tab === 'tombola')  spinTombola();
+  if (tab === 'dice')     rollDice();
+  if (tab === 'roulette') spinRoulette();
+  if (tab === 'groups')   buildGroups();
+});
+</script>
+</body>
+</html>

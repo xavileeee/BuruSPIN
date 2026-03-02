@@ -1,0 +1,21 @@
+{
+    "name": "Node.js v20",
+    "image": "mcr.microsoft.com/devcontainers/javascript-node:1-20-bullseye",
+    "features": {
+        "ghcr.io/devcontainers/features/node:1": {
+            "version": "20"
+        }
+    },
+    "postCreateCommand": "npm install",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "google.clasp-explorer",
+                "dbaeumer.vscode-eslint"
+            ]
+        }
+    },
+    "forwardPorts": [
+        3000
+    ]
+}

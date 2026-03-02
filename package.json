@@ -1,0 +1,16 @@
+{
+  "name": "buruspin",
+  "version": "1.0.0",
+  "description": "Proyecto BuruSPIN para Google Apps Script",
+  "main": "index.html",
+  "scripts": {
+    "login": "clasp login",
+    "push": "clasp push",
+    "pull": "clasp pull",
+    "watch": "clasp push --watch",
+    "start": "npx serve ."
+  },
+  "devDependencies": {
+    "@google/clasp": "^2.4.2"
+  }
+}
