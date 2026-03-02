@@ -16,6 +16,15 @@ La aplicación incluye cuatro módulos fundamentales:
 *   👥 **Creador de Grupos**: Divide a la clase en grupos de forma aleatoria indicando el número de alumnos deseado por grupo.
 *   📋 **Gestión de Alumnos**: Panel lateral para pegar la lista de clase, con funciones para **guardar y cargar archivos `.txt`** locales, facilitando el uso de diferentes listas en segundos.
 
+<img width="1360" height="694" alt="image" src="https://github.com/user-attachments/assets/34f06a5a-576f-4c35-a3a9-7d7053d1a040" />
+
+<img width="1376" height="615" alt="image" src="https://github.com/user-attachments/assets/442c79a6-2ff5-4951-b9f3-e3e3f02c831f" />
+
+<img width="1370" height="724" alt="image" src="https://github.com/user-attachments/assets/c68af38b-53ce-43cd-95f4-c9e5534460eb" />
+
+<img width="1406" height="748" alt="image" src="https://github.com/user-attachments/assets/17b67725-7cf7-46d8-a091-81ca5f40d306" />
+
+
 ## 🚀 Cómo probar el proyecto rápidamente
 
 Puedes previsualizar la interfaz de usuario de las siguientes maneras:
