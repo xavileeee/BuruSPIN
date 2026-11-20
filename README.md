@@ -1,49 +1,79 @@
-# BuruSPIN 🎰🎲🎡
+# BuruSPIN — Herramientas de Aula y Gamificación
 
-**BuruSPIN** es una suite de herramientas interactivas diseñada para dinamizar el aula. Esta aplicación permite a los docentes realizar sorteos, lanzar dados, girar ruletas y crear grupos de alumnos de manera visual, rápida y divertida.
+**IES Sáenz de Buruaga** · Aplicación web interactiva desarrollada para dinamizar clases presenciales, selección aleatoria de alumnado, dinámicas de grupo y actividades participativas en el aula.
 
-Desarrollada como un **Web App de Google Apps Script**, BuruSPIN combina un diseño moderno y "premium" (con animaciones y sonidos) con la potencia de la integración en el ecosistema de Google Workspace.
+---
 
-## ✨ Características Principales
+## 📋 Resumen del Proyecto
 
-La aplicación incluye cuatro módulos fundamentales:
+| Parámetro | Detalle |
+| :--- | :--- |
+| **Repositorio GitHub** | [https://github.com/xavileeee/BuruSPIN](https://github.com/xavileeee/BuruSPIN) |
+| **Acceso desde Homarr** | Módulo directo en BuruPanel (`http://panel.saenzdeburuaga`) |
+| **Manual de Usuario en BuruWikiTIC** | [Libro BuruPanel > Capítulo BuruSPIN](http://buruwiki.saenzdeburuaga/books/burupanel/chapter/buruspin) |
+| **Script ID** | `1DnChMv5nofr6LwNsCgA-2Lu1Yh2dEdh0BNZbUsvgLiY_sHe-xjymGwbm` |
+| **Acceso Online (GAS)** | [Web App Desplegada](https://script.google.com/a/macros/iessaenzdeburuaga.es/s/AKfycbxMmQTxubJhdZaIHbRGKziOSLEneHuuNmPPHpSqHwnxl432Er5GKeCm2DoA3tYik0lh/exec) · [Editor Apps Script](https://script.google.com/d/1DnChMv5nofr6LwNsCgA-2Lu1Yh2dEdh0BNZbUsvgLiY_sHe-xjymGwbm/edit) |
+| **Estilo Visual** | *Neo-brutalism* moderno, Tailwind CSS, animaciones fluidas y alto contraste |
+| **Público Objetivo** | Docentes con paneles digitales interactivos (PDI) o proyectores en el aula |
 
-*   🎰 **Tómbola (Efecto Tragamonedas)**: Selecciona un alumno al azar con una animación de giro. El sistema lleva un control para **no repetir nombres** hasta que todos hayan salido (incluye botón de reset).
-*   🎲 **Generador de Números (Dados)**: Permite lanzar un "dado virtual" configurando el rango mínimo y máximo. Ideal para juegos, sorteos numéricos o asignar turnos de ejercicios.
-*   🎡 **Ruleta Interactiva**: Una ruleta física virtual con sonidos de "tick" y modo dual:
-    *   **Modo Alumnos**: Crea sectores automáticamente con los nombres de la clase.
-    *   **Modo Números**: Configura de 2 a 16 sectores numéricos.
-*   👥 **Creador de Grupos**: Divide a la clase en grupos de forma aleatoria indicando el número de alumnos deseado por grupo.
-*   📋 **Gestión de Alumnos**: Panel lateral para pegar la lista de clase, con funciones para **guardar y cargar archivos `.txt`** locales, facilitando el uso de diferentes listas en segundos.
+---
 
-<img width="1360" height="694" alt="image" src="https://github.com/user-attachments/assets/34f06a5a-576f-4c35-a3a9-7d7053d1a040" />
+## 🎨 Identidad Visual y Unicidad de Iconos
 
-<img width="1376" height="615" alt="image" src="https://github.com/user-attachments/assets/442c79a6-2ff5-4951-b9f3-e3e3f02c831f" />
+Siguiendo el principio de **Unicidad de Iconos** del IES Sáenz de Buruaga:
 
-<img width="1370" height="724" alt="image" src="https://github.com/user-attachments/assets/c68af38b-53ce-43cd-95f4-c9e5534460eb" />
+- **Icono Oficial:** Isotipo multicolor Papirus Lucky Patcher (ruleta/juegos didácticos).
+- **Ruta Local:** [buruspin_logo.png](file:///d:/PROYECTOS/IES%20SAENZ%20DE%20BURUAGA/PROYECTOS/BuruSPIN/buruspin_logo.png) · [buruspin_logo.svg](file:///d:/PROYECTOS/IES%20SAENZ%20DE%20BURUAGA/PROYECTOS/BuruSPIN/buruspin_logo.svg)
+- **Repositorio Central de Identidad:** [buruspin_logo_oficial.png](file:///d:/PROYECTOS/IES%20SAENZ%20DE%20BURUAGA/Identidad_Corporativa/logos/buruspin_logo_oficial.png)
 
-<img width="1406" height="748" alt="image" src="https://github.com/user-attachments/assets/17b67725-7cf7-46d8-a091-81ca5f40d306" />
+---
 
+## 🎲 Módulos y Utilidades de Aula
 
-## 🚀 Cómo probar el proyecto rápidamente
+1. **Tómbola / Selector Aleatorio de Alumnos (`#slot-reel`):**
+   - Animación de ruleta o máquina tragaperras para seleccionar estudiantes de forma imparcial y divertida.
+   - Efectos de resplandor visual (`winner-glow`) y sonido al proclamar el ganador.
+   - Opción para excluir alumnos ya seleccionados en la misma sesión.
 
-Puedes previsualizar la interfaz de usuario de las siguientes maneras:
+2. **Lanzador de Dados Animado (`.dice-dance`):**
+   - Lanzamiento simultáneo de uno o varios dados con físicas y rotaciones visuales.
+   - Ideal para juegos didácticos, asignación de turnos o problemas de probabilidad y matemáticas.
 
-1.  **Directamente**: Abre el archivo `index.html` en tu navegador para ver el diseño y probar la lógica (las funciones de red no estarán activas).
-2.  **GitHub Codespaces**:
-    *   Abre este repositorio en un Codespace.
-    *   Ejecuta `npm start` en la terminal.
-    *   **IMPORTANTE**: En la pestaña de **Ports**, asegúrate de que el puerto (normalmente el 3000) esté configurado como **Público** (clic derecho sobre la visibilidad -> "Public").
+3. **Generador de Equipos y Parejas:**
+   - Permite pegar la lista del grupo clase y divide automáticamente a los alumnos en equipos equilibrados de tamaño configurable.
 
-## 🛠️ Desarrollo y Despliegue con CLASP
+4. **Temporizador Rápido de Actividad:**
+   - Cuenta atrás visual para ejercicios por tiempo limitado (retos de 1 a 5 minutos, preguntas rápidas, etc.).
 
-Este proyecto utiliza `@google/clasp` para sincronizar el código local con Google Apps Script.
+---
 
-### Comandos disponibles:
+## 📂 Archivos del Proyecto
 
-*   `npm run login`: Inicia sesión en tu cuenta de Google.
-*   `npm run pull`: Descarga la última versión desde Google Apps Script.
-*   `npm run push`: Sube tus cambios locales a Google Apps Script.
-*   `npm run watch`: Sube automáticamente los cambios mientras editas.
+```text
+PROYECTOS/BuruSPIN/
+├── .clasp.json                # Configuración de Clasp y Script ID oficial
+├── appsscript.json            # Manifiesto de la WebApp
+├── buruspin_logo.png          # Icono oficial PNG
+├── buruspin_logo.svg          # Icono oficial vectorial SVG
+├── capturas/                  # Capturas de la interfaz real del aula
+│   ├── captura_buruspin_inicio.png
+│   └── captura_buruspin_ui_real.png
+├── Código.js                  # Servidor mínimo para despliegue con HtmlService
+├── index.html                 # Aplicación SPA autónoma con Tailwind CSS y componentes interactivos
+└── README.md                  # Documentación técnica del proyecto
+```
 
-> **Nota**: `clasp` se usa exclusivamente para subir el proyecto a Google Apps Script cuando se deseen desplegar los cambios oficialmente. El script `npm start` solo sirve para previsualizar el frontend (`index.html`).
+---
+
+## 💻 Gestión y Despliegue con Clasp
+
+```powershell
+# Acceder a la carpeta
+cd "D:\PROYECTOS\IES SAENZ DE BURUAGA\PROYECTOS\BuruSPIN"
+
+# Descargar cambios desde Google Apps Script
+clasp pull
+
+# Desplegar cambios locales a la nube
+clasp push
+```
