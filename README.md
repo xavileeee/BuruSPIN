@@ -12,7 +12,7 @@
 | **Acceso desde Homarr** | Módulo directo en BuruPanel (`http://panel.saenzdeburuaga`) |
 | **Manual de Usuario en BuruWikiTIC** | [Libro BuruPanel > Capítulo BuruSPIN](http://buruwiki.saenzdeburuaga/books/burupanel/chapter/buruspin) |
 | **Script ID** | `1DnChMv5nofr6LwNsCgA-2Lu1Yh2dEdh0BNZbUsvgLiY_sHe-xjymGwbm` |
-| **Acceso Online (GAS)** | [Web App Desplegada](https://script.google.com/a/macros/iessaenzdeburuaga.es/s/AKfycbwxwNR8mKbTA8f7T_zEGzk4kGjkGbkKqI4V2jR0Hz5JK_Xw91PfY0rr45Ks0Otu_hnz/exec) · [Editor Apps Script](https://script.google.com/d/1DnChMv5nofr6LwNsCgA-2Lu1Yh2dEdh0BNZbUsvgLiY_sHe-xjymGwbm/edit) |
+| **Acceso Corporativo** | Exclusivo para personal del centro mediante cuenta institucional `@iessaenzdeburuaga.es` a través de [BuruPanel](http://panel.saenzdeburuaga) |
 | **Estilo Visual** | *Neo-brutalism* moderno, Tailwind CSS, animaciones fluidas y alto contraste |
 | **Público Objetivo** | Docentes con paneles digitales interactivos (PDI) o proyectores en el aula |
 
